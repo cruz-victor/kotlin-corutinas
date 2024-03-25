@@ -3,10 +3,35 @@ package com.example.kotlin01
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 fun main(){
-    globalScope()
+    //globalScope()
+    //suspendFunctions()
+    newTopic("Constructore de coroutines")
+    contructorRunBlocking()
     readLine()
+}
+
+fun contructorRunBlocking() {
+    newTopic("RunBlocking")
+
+    runBlocking{
+        startMessage()
+        delay(someTime())
+        println("RunBlocking...")
+        endMessage()
+    }
+}
+
+fun suspendFunctions() {
+    newTopic("Suspend Function")
+    Thread.sleep(someTime())
+
+    GlobalScope.launch {
+        println("Delay...")
+        delay(someTime())
+    }
 }
 
 fun globalScope() {
