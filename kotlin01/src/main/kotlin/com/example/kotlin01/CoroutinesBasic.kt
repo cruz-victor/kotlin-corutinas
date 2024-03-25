@@ -35,8 +35,6 @@ fun CoroutineScope.produceLastNames():ReceiveChannel<String> = produce{
             (1..5).forEach { send("lastName $it") }
 }
 
-
-
 fun deferredv2() {
     runBlocking {
         newTopic("Deferred")
