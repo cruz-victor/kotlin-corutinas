@@ -1,5 +1,8 @@
 package com.example.kotlin01
 
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.concurrent.thread
 import kotlin.random.Random
 

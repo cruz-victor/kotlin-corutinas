@@ -15,7 +15,7 @@
     <description>Demo project for Spring Boot</description>
     <properties>
         <java.version>17</java.version>
-        <kotlin.version>1.9.23</kotlin.version>
+        <kotlin.version>1.9.0</kotlin.version>
     </properties>
     <dependencies>
         <dependency>
@@ -23,41 +23,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-kotlin</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-reflect</artifactId>
-        </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.jetbrains.kotlin</groupId>-->
-<!--            <artifactId>kotlin-stdlib</artifactId>-->
-<!--        </dependency>-->
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib</artifactId>
-            <version>${kotlin.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.jetbrains.kotlinx</groupId>
-            <artifactId>kotlinx-coroutines-core</artifactId>
-            <version>1.7.3</version>
-            <type>pom</type>
-            <scope>runtime</scope>
-        </dependency>
-
-
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -65,61 +33,57 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-kotlin</artifactId>
+        </dependency>
+
+        <!--coroutines-->
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core</artifactId>
+            <version>1.8.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-bom</artifactId>
+            <version>1.8.0</version>
+            <type>pom</type>
+            <scope>import</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jetbrains.kotlinx</groupId>
+            <artifactId>kotlinx-coroutines-core-jvm</artifactId>
+            <version>1.8.0</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>spring-repo</id>
-            <url>https://repo.spring.io/release</url>
-        </repository>
-    </repositories>
-
-<!--    <build>-->
-<!--        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>-->
-<!--        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>-->
-<!--        <plugins>-->
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    <excludes>-->
-<!--                        <exclude>-->
-<!--                            <groupId>org.projectlombok</groupId>-->
-<!--                            <artifactId>lombok</artifactId>-->
-<!--                        </exclude>-->
-<!--                    </excludes>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
-<!--            <plugin>-->
-<!--                <artifactId>kotlin-maven-plugin</artifactId>-->
-<!--                <groupId>org.jetbrains.kotlin</groupId>-->
-<!--                <version>1.9.23</version>-->
-<!--            </plugin>-->
-
-<!--            &lt;!&ndash;            <plugin>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <groupId>org.jetbrains.kotlin</groupId>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <artifactId>kotlin-maven-plugin</artifactId>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <configuration>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    <args>&ndash;&gt;-->
-<!--            &lt;!&ndash;                        <arg>-Xjsr305=strict</arg>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    </args>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    <compilerPlugins>&ndash;&gt;-->
-<!--            &lt;!&ndash;                        <plugin>spring</plugin>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    </compilerPlugins>&ndash;&gt;-->
-<!--            &lt;!&ndash;                </configuration>&ndash;&gt;-->
-<!--            &lt;!&ndash;                <dependencies>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    <dependency>&ndash;&gt;-->
-<!--            &lt;!&ndash;                        <groupId>org.jetbrains.kotlin</groupId>&ndash;&gt;-->
-<!--            &lt;!&ndash;                        <artifactId>kotlin-maven-allopen</artifactId>&ndash;&gt;-->
-<!--            &lt;!&ndash;                        <version>${kotlin.version}</version>&ndash;&gt;-->
-<!--            &lt;!&ndash;                    </dependency>&ndash;&gt;-->
-<!--            &lt;!&ndash;                </dependencies>&ndash;&gt;-->
-<!--            &lt;!&ndash;            </plugin>&ndash;&gt;-->
-<!--        </plugins>-->
-<!--    </build>-->
-
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -129,6 +93,7 @@
                 <executions>
                     <execution>
                         <id>compile</id>
+                        <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
                         </goals>
@@ -136,12 +101,37 @@
 
                     <execution>
                         <id>test-compile</id>
+                        <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>attached</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifest>
+                                    <mainClass>app.MainKt</mainClass>
+                                </manifest>
+                            </archive>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
