@@ -1,21 +1,41 @@
 package com.example.kotlin01
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.channels.produce
 
 fun main(){
     //globalScope()
     //suspendFunctions()
-    //newTopic("Constructore de coroutines")
+    newTopic("Constructore de coroutines")
     //contructorRunBlocking()
     //contructorLaunch()
     //constructorAsync()
     //constructorAsyncv2()
-    newTopic("Job and Deferred")
+    contructorProduce()
+    //newTopic("Job and Deferred")
     //job()
     //deferred()
-    deferredv2()
+    //deferredv2()
+
     readLine()
 }
+
+fun contructorProduce() {
+    runBlocking {
+
+        newTopic("Produce")
+        val lastNames=produceLastNames()
+        lastNames.consumeEach { println(it) }
+    }
+}
+
+fun CoroutineScope.produceLastNames():ReceiveChannel<String> = produce{
+            (1..5).forEach { send("lastName $it") }
+}
+
+
 
 fun deferredv2() {
     runBlocking {
