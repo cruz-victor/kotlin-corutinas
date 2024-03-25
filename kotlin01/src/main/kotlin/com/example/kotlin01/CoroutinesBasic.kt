@@ -9,8 +9,21 @@ fun main(){
     //globalScope()
     //suspendFunctions()
     newTopic("Constructore de coroutines")
-    contructorRunBlocking()
+    //contructorRunBlocking()
+    contructorLaunch()
     readLine()
+}
+
+fun contructorLaunch() {
+    runBlocking {
+        newTopic("Launch")
+        launch {
+            startMessage()
+            delay(someTime())
+            println("Launch...")
+            endMessage()
+        }
+    }
 }
 
 fun contructorRunBlocking() {
