@@ -1,22 +1,52 @@
 package com.example.kotlin01
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 
 fun main(){
     //globalScope()
     //suspendFunctions()
     newTopic("Constructore de coroutines")
     //contructorRunBlocking()
-    contructorLaunch()
+    //contructorLaunch()
+    //constructorAsync()
+    constructorAsyncv2()
     readLine()
+}
+
+fun constructorAsync() {
+    runBlocking {
+        newTopic("Async")
+
+        var result=async {
+            startMessage()
+            delay(someTime())
+            println("Async...")
+            endMessage()
+            1
+        }
+        print("Result: ${result.await()}")
+    }
+}
+
+fun constructorAsyncv2() {
+    runBlocking {
+        newTopic("Async")
+
+        var result=async {
+            startMessage()
+            delay(someTime())
+            println("Async...")
+            endMessage()
+            1
+        }.await()
+        print("Result: ${result}")
+    }
 }
 
 fun contructorLaunch() {
     runBlocking {
         newTopic("Launch")
+
         launch {
             startMessage()
             delay(someTime())
