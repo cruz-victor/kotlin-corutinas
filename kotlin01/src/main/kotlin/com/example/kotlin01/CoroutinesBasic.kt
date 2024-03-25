@@ -11,8 +11,41 @@ fun main(){
     //constructorAsync()
     //constructorAsyncv2()
     newTopic("Job and Deferred")
-    job()
+    //job()
+    //deferred()
+    deferredv2()
     readLine()
+}
+
+fun deferredv2() {
+    runBlocking {
+        newTopic("Deferred")
+
+        var deferred=async {
+            multi(5,7)
+        }.await()
+
+        delay(3_000)
+        println("Valor del deferred value: ${deferred} ")
+    }
+}
+
+fun deferred() {
+    runBlocking {
+        newTopic("Deferred")
+
+        var deferred=async {
+            startMessage()
+            delay(someTime())
+            println("Asyc...")
+            endMessage()
+            multi(5,5)
+        }
+
+        delay(3_000)
+        println("Deferred: ${deferred}")
+        println("Valor del deferred.awaid: ${deferred.await()} ")
+    }
 }
 
 fun job() {
