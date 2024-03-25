@@ -5,12 +5,41 @@ import kotlinx.coroutines.*
 fun main(){
     //globalScope()
     //suspendFunctions()
-    newTopic("Constructore de coroutines")
+    //newTopic("Constructore de coroutines")
     //contructorRunBlocking()
     //contructorLaunch()
     //constructorAsync()
-    constructorAsyncv2()
+    //constructorAsyncv2()
+    newTopic("Job and Deferred")
+    job()
     readLine()
+}
+
+fun job() {
+    runBlocking {
+        newTopic("Job")
+
+        var job=launch {
+            startMessage()
+            delay(someTime())
+            println("Job...")
+            endMessage()
+        }
+
+        //delay(4_000)
+        println("Job: $job")
+        println("isActive: ${job.isActive} ")
+        println("isCancelled: ${job.isCancelled} ")
+        println("isCompleted: ${job.isCompleted} ")
+
+        //delay(someTime())
+        println("Tarea cancelda o interrupinda")
+        job.cancel()
+
+        println("isActive: ${job.isActive} ")
+        println("isCancelled: ${job.isCancelled} ")
+        println("isCompleted: ${job.isCompleted} ")
+    }
 }
 
 fun constructorAsync() {
