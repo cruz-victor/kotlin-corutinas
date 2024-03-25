@@ -58,8 +58,8 @@
         </dependency>
 
         <!--begin coroutines dependencies-->
-<!--        Note: Tomar en cuenta la version de kotlin, version de coroutina y version del plugin de intellig para kotlin.-->
-<!--        Los anteriores tienes que formar parte de alguna version, por ejemplo 1.6.x, caso contrario, los programas de kt no compilan-->
+<!--        Nota: Tomar en cuenta la version de kotlin, version de coroutina y version del plugin de intellig para kotlin.-->
+<!--        Los anteriores tienen que formar parte de algun grupo de versiones, por ejemplo 1.6.x, caso contrario, los programas de kt no compilan-->
 <!--        Para actualizar la version mas reciente ingresar a la siguiente pagina:-->
 <!--        https://central.sonatype.com/artifact/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.6.2/overview-->
         <dependency>
@@ -86,7 +86,7 @@
     </dependencies>
 
     <build>
-<!--        Nota:  agregar el sourceDirectory para compliar los archivos de kt.-->
+<!--        Nota:  Agregar el sourceDirectory para compilar los archivos de kt-->
 <!--        Cuando se tienen archivos java y kotlin agregar el codigo de la seccion 'Compile Kotlin and Java sources' de la siguiente pagina:-->
 <!--        https://kotlinlang.org/docs/maven.html-->
         <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
