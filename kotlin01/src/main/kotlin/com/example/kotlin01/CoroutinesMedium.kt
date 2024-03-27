@@ -4,7 +4,32 @@ import kotlinx.coroutines.*
 
 fun main(){
 //    dispatchers()
-    nested()
+//    nested()
+    changeWithContext()
+}
+
+fun changeWithContext() {
+    //Las siguientes lineas se ejecutan secuencialmente, withConext no crear procesos asincronos
+    runBlocking {
+        newTopic("withContext")
+        startMessage("withContext main")
+
+        withContext(newSingleThreadContext("newSingleThread 1")){
+            startMessage("withConext newSingleThread")
+            delay(someTime())
+            println("contexto newSingleThread...")
+            endMessage("withConext newSingleThread")
+        }
+
+        withContext(Dispatchers.IO){
+            startMessage("withConext Dispatcher.IO")
+            delay(someTime())
+            println("contexto Dispatcher.IO...")
+            endMessage("withConext Dispatcher.IO")
+        }
+
+        endMessage("withContext main")
+    }
 }
 
 fun nested() {
