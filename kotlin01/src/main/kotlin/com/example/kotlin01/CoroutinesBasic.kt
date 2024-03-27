@@ -167,8 +167,16 @@ fun globalScope() {
     }
 }
 
+fun startMessage(message:String) {
+    println("--- Comenzando coroutine: [${message}] - Hilo: [${Thread.currentThread().name}]")
+}
+
+fun endMessage(message:String) {
+    println("--- Coroutine finalizado: [${message}] - Hilo: [${Thread.currentThread().name}]")
+}
+
 fun startMessage() {
-    println("--- Comenzando coroutine --- Hilo: ${Thread.currentThread().name}")
+    println("--- Comenzando coroutine  --- Hilo: ${Thread.currentThread().name}")
 }
 
 fun endMessage() {
