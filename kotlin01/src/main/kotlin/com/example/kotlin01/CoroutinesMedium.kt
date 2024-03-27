@@ -1,13 +1,52 @@
 package com.example.kotlin01
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlin.random.Random
 
 fun main(){
 //    dispatchers()
 //    nested()
 //    changeWithContext()
-    sequences()
+    //sequences()
+    basicFlows()
+}
+
+fun basicFlows() {
+    newTopic("Flows basic")
+    runBlocking {
+        startMessage("1 runBlocking")
+
+        launch {
+            startMessage("2 DataByFlow")
+            getDataByFlow().collect { println(it) }
+            endMessage("2 DataByFlow")
+        }
+
+        launch {
+            startMessage("3 Other task")
+            (1..50).forEach {
+                delay(someTime()/10)
+                println("Tarea 2")
+            }
+            endMessage("3 Other task")
+        }
+
+        endMessage("1 runBlocking")
+    }
+}
+
+fun getDataByFlow(): Flow<Float> {
+    //Los datos en el flow se van generando progresivamente. Similar a Sequence pero Asincrono (similar a Stream() de java)
+    return flow {
+        (1..5).forEach {
+            println("procesando datos...")
+            delay(someTime())
+            emit(20+it+ Random.nextFloat())
+        }
+    }
 }
 
 fun sequences() {
