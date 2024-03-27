@@ -16,6 +16,7 @@ fun sequences() {
 }
 
 fun getDataBySequence(): Sequence<Float> {
+    //Los datos en las sequences se van generando progresivamente (similar a Stream() de java)
     return sequence {
         (1..5).forEach {
             println("procesando datos...")
