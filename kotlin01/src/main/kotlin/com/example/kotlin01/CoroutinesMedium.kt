@@ -1,11 +1,28 @@
 package com.example.kotlin01
 
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 fun main(){
 //    dispatchers()
 //    nested()
-    changeWithContext()
+//    changeWithContext()
+    sequences()
+}
+
+fun sequences() {
+    newTopic("Sequences")
+    getDataBySequence().forEach { println("${it}") }
+}
+
+fun getDataBySequence(): Sequence<Float> {
+    return sequence {
+        (1..5).forEach {
+            println("procesando datos...")
+            Thread.sleep(someTime())
+            yield(20+it+ Random.nextFloat())
+        }
+    }
 }
 
 fun changeWithContext() {
