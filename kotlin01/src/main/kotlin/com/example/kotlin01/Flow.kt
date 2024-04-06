@@ -1,17 +1,58 @@
 package com.example.kotlin01
 
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.transform
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 fun main() {
 //coldFlow()
 //cancelFlow()
-    flowOperators()
+//flowOperators()
+    terminalFlowOperator()
+}
+
+fun terminalFlowOperator() {
+    runBlocking {
+        newTopic("Operadores Flow Terminales")
+        newTopic("List")
+        val numbersList= getDataByFlow()
+            //.toList()
+        println("List: $numbersList")
+
+        newTopic("Single")
+        val singleElement= getDataByFlow()
+            .take(1)
+            //.single()
+        println("Single: $singleElement")
+
+        newTopic("First")
+        val firtElement= getDataByFlow()
+            //.first()
+        println("First element: $firtElement")
+
+        newTopic("Last")
+        //val elements= getDataByFlow().toList();
+        //val lastElement=elements.last()
+        //println("Last element: $lastElement")
+
+        newTopic("Reduce")
+        val totalCostInvoice = getDataByFlow()
+            .reduce{accumulatedCost, nextCost->
+                accumulatedCost+nextCost
+            }
+
+        println("Total cost invoice: $totalCostInvoice")
+
+        newTopic("Fold")
+        val generalTotalCostInvoice= getDataByFlow()
+            .fold(totalCostInvoice) { accumulatedCost, nextCost ->
+                accumulatedCost + nextCost
+            }
+        println("General total cost invoice: $generalTotalCostInvoice")
+
+
+    }
 }
 
 fun flowOperators() {
@@ -45,7 +86,15 @@ fun flowOperators() {
                 emit(setFormatToCelsius(it))
                 emit(setFormatToCelsius(convertCelsiusToFahrenheit(it), "F"))
             }
+            //.collect { println(it) }
+
+        //---------------------
+        newTopic("Take")
+        getDataByFlow()
+            .take(3)
+            .map { setFormatToCelsius(it) }
             .collect { println(it) }
+
     }
 }
 

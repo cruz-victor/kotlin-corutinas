@@ -44,7 +44,9 @@ fun getDataByFlow(): Flow<Float> {
         (1..5).forEach {
             println("procesando datos...")
             delay(someTime())
-            emit(20+it+ Random.nextFloat())
+            var randomNumber=20+it+ Random.nextFloat()
+            println(randomNumber)
+            emit(randomNumber)
         }
     }
 }
