@@ -38,6 +38,19 @@ fun basicFlows() {
     }
 }
 
+fun getDataByFlowWithDelayStatic(): Flow<Float> {
+    //Los datos en el flow se van generando progresivamente. Similar a Sequence pero Asincrono (similar a Stream() de java)
+    return flow {
+        (1..5).forEach {
+            println("procesando datos...")
+            delay(300) //1500ms
+            var randomNumber=20+it+ Random.nextFloat()
+            println(randomNumber)
+            emit(randomNumber)
+        }
+    }
+}
+
 fun getDataByFlow(): Flow<Float> {
     //Los datos en el flow se van generando progresivamente. Similar a Sequence pero Asincrono (similar a Stream() de java)
     return flow {

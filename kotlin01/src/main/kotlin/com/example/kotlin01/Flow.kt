@@ -4,12 +4,34 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
 fun main() {
 //coldFlow()
 //cancelFlow()
 //flowOperators()
-    terminalFlowOperator()
+//terminalFlowOperator()
+    bufferFlow()
+}
+
+fun bufferFlow() {
+    //Buffer = Zona de almacenamiento temporal/Memoria intermedia
+    //Usar cuando los datos producidos (flow) son mas rapidos que los datos consumidos (collect)
+    runBlocking {
+        newTopic("Buffer flow")
+        val time= measureTimeMillis {
+            getDataByFlowWithDelayStatic()
+                .map { setFormatToCelsius(it) }
+                .buffer() //Sin buffer=4642ms ; Con buffer=3431ms //Diferencia= 1211ms
+                .collect {
+                    delay(600) //2500ms
+                    println("collect print: $it")
+                }
+        }
+
+        println("Time: $time")
+
+    }
 }
 
 fun terminalFlowOperator() {
@@ -50,8 +72,6 @@ fun terminalFlowOperator() {
                 accumulatedCost + nextCost
             }
         println("General total cost invoice: $generalTotalCostInvoice")
-
-
     }
 }
 
