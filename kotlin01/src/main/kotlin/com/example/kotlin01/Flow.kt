@@ -20,7 +20,9 @@ fun main() {
 
 fun flatFlow() {
     runBlocking {
-        newTopic("Flujo de aplanamiento - flatMapConcat")
+        newTopic("Aplanamiento de Flujos")
+
+        newTopic("FlatMapConcat")
 
         getCitiesFlow()
             .flatMapConcat{ city->
@@ -28,6 +30,16 @@ fun flatFlow() {
             }
             .map { setFormatToCelsius(it) }
             .collect { println(it) }
+
+
+        newTopic("FlatMapMerge")
+
+        getCitiesFlow()
+            .flatMapMerge{ city->
+                getLastThreeTemperaturesByCityFlow(city)
+            }
+            .map { setFormatToCelsius(it) }
+            //.collect { println(it) }
     }
 }
 
@@ -36,7 +48,7 @@ fun getCitiesFlow():Flow<String>{
     return flow{
         listOf("La Paz","Cochabamba","Santa Cruz")
             .forEach { city->
-                delay(1_000)
+                delay(2_000)
                 println("- Ciudad consultada: $city")
                 emit(city)
             }
@@ -50,7 +62,7 @@ fun getLastThreeTemperaturesByCityFlow(city:String):Flow<Float>{
     return flow {
         (1..3).forEach {
             println("- Temperatura $it")
-            delay(100)
+            delay(1_000)
             emit(Random.nextInt(10,30).toFloat())
         }
     }
