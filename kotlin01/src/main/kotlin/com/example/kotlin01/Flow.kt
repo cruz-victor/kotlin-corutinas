@@ -4,6 +4,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
 fun main() {
@@ -13,8 +14,48 @@ fun main() {
 //terminalFlowOperator()
 //bufferFlow()
 //conflateFlow()
-    multiFlow()
+//multiFlow()
+    flatFlow()
 }
+
+fun flatFlow() {
+    runBlocking {
+        newTopic("Flujo de aplanamiento - flatMapConcat")
+
+        getCitiesFlow()
+            .flatMapConcat{ city->
+                getLastThreeTemperaturesByCityFlow(city)
+            }
+            .map { setFormatToCelsius(it) }
+            .collect { println(it) }
+    }
+}
+
+fun getCitiesFlow():Flow<String>{
+    println("Servicio web - Consultando ciudades ...")
+    return flow{
+        listOf("La Paz","Cochabamba","Santa Cruz")
+            .forEach { city->
+                delay(1_000)
+                println("- Ciudad consultada: $city")
+                emit(city)
+            }
+    }
+}
+
+
+
+fun getLastThreeTemperaturesByCityFlow(city:String):Flow<Float>{
+    println("Servicio web - Consultando 3 temperaturas para $city ...")
+    return flow {
+        (1..3).forEach {
+            println("- Temperatura $it")
+            delay(100)
+            emit(Random.nextInt(10,30).toFloat())
+        }
+    }
+}
+
 
 fun multiFlow() {
     runBlocking {

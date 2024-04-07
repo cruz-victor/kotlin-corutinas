@@ -74,6 +74,8 @@ fun getDataIntByFlow():Flow<Int>{
     }
 }
 
+
+
 fun sequences() {
     newTopic("Sequences")
     getDataBySequence().forEach { println("${it}") }
