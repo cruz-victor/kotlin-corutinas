@@ -67,9 +67,11 @@ fun getDataByFlow(): Flow<Float> {
 fun getDataIntByFlow():Flow<Int>{
     return flow{
         (1..5).forEach {
-            //delay(someTime())
+            delay(someTime())
             println("-Number generated: $it")
             emit(it)
+
+            if (it==3) throw Exception("Se alcanzo al numero de intentos igual a 3")
         }
     }
 }

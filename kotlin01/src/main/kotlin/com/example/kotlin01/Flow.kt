@@ -15,7 +15,46 @@ fun main() {
 //bufferFlow()
 //conflateFlow()
 //multiFlow()
-    flatFlow()
+//flatFlow()
+//flowExceptionsV1()
+    flowExceptionsV2()
+
+}
+
+fun flowExceptionsV2() {
+    runBlocking {
+        newTopic("Control de errores")
+        newTopic("Try/Catch")
+
+        getDataIntByFlow()
+            .catch {
+                //Salta a esta instruccion cuando en el generador de flujo de numeros hay un numero 3 y se lanza una excepcion
+                emit(-1)
+            }
+            .collect {
+                println(it)
+                if (it==-1) println("Notifica al programador...")
+            }
+    }
+}
+
+fun flowExceptionsV1() {
+    runBlocking {
+        newTopic("Control de errores")
+        newTopic("Try/Catch")
+
+        try {
+            getDataIntByFlow()
+                .collect {
+                    println(it)
+                    if (it==3) throw Exception("Se alcanzo al numero de intentos igual a 3")
+                }
+        }catch (e:Exception){
+            println("Ocurrio una excepcion...")
+            //e.printStackTrace()
+        }
+
+    }
 }
 
 fun flatFlow() {
