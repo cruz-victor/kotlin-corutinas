@@ -12,7 +12,34 @@ fun main() {
 //flowOperators()
 //terminalFlowOperator()
 //bufferFlow()
-    conflateFlow()
+//conflateFlow()
+    multiFlow()
+}
+
+fun multiFlow() {
+    runBlocking {
+        newTopic("MultiFlow")
+
+        newTopic("Zip")
+        getDataByFlow()
+            .map {
+                setFormatToCelsius(it)
+            }
+            .zip(getDataIntByFlow()) { degrees, result ->
+                "key: $result - value: $degrees"
+            }
+            .collect { println(it) }
+
+        newTopic("Combine")
+        getDataByFlow()
+            .map {
+                setFormatToCelsius(it)
+            }
+            .combine(getDataIntByFlow()){ degrees, result->
+                "key: $result - value $degrees"
+            }
+            //.collect { println(it) }
+    }
 }
 
 fun conflateFlow() {
@@ -21,7 +48,7 @@ fun conflateFlow() {
     //No mantiene todos los elementos del flow, los solapa
     runBlocking {
         newTopic("Conflate flow")
-        val time= measureTimeMillis {
+        val time = measureTimeMillis {
             getDataByFlowWithDelayStatic()
                 .map { setFormatToCelsius(it) }
                 .conflate() //Sin conflate=4635ms ; Con conflate=2831ms //Diferencia= 1804ms
@@ -40,7 +67,7 @@ fun bufferFlow() {
     //Mantiene todos los elementos del flow
     runBlocking {
         newTopic("Buffer flow")
-        val time= measureTimeMillis {
+        val time = measureTimeMillis {
             getDataByFlowWithDelayStatic()
                 .map { setFormatToCelsius(it) }
                 .buffer() //Sin buffer=4642ms ; Con buffer=3431ms //Diferencia= 1211ms
@@ -59,19 +86,19 @@ fun terminalFlowOperator() {
     runBlocking {
         newTopic("Operadores Flow Terminales")
         newTopic("List")
-        val numbersList= getDataByFlow()
-            //.toList()
+        val numbersList = getDataByFlow()
+        //.toList()
         println("List: $numbersList")
 
         newTopic("Single")
-        val singleElement= getDataByFlow()
+        val singleElement = getDataByFlow()
             .take(1)
-            //.single()
+        //.single()
         println("Single: $singleElement")
 
         newTopic("First")
-        val firtElement= getDataByFlow()
-            //.first()
+        val firtElement = getDataByFlow()
+        //.first()
         println("First element: $firtElement")
 
         newTopic("Last")
@@ -81,14 +108,14 @@ fun terminalFlowOperator() {
 
         newTopic("Reduce")
         val totalCostInvoice = getDataByFlow()
-            .reduce{accumulatedCost, nextCost->
-                accumulatedCost+nextCost
+            .reduce { accumulatedCost, nextCost ->
+                accumulatedCost + nextCost
             }
 
         println("Total cost invoice: $totalCostInvoice")
 
         newTopic("Fold")
-        val generalTotalCostInvoice= getDataByFlow()
+        val generalTotalCostInvoice = getDataByFlow()
             .fold(totalCostInvoice) { accumulatedCost, nextCost ->
                 accumulatedCost + nextCost
             }
@@ -118,7 +145,7 @@ fun flowOperators() {
             .map {
                 setFormatToCelsius(it)
             }
-           // .collect { println(it) }
+        // .collect { println(it) }
 
         //---------------------
         newTopic("Transform")
@@ -127,7 +154,7 @@ fun flowOperators() {
                 emit(setFormatToCelsius(it))
                 emit(setFormatToCelsius(convertCelsiusToFahrenheit(it), "F"))
             }
-            //.collect { println(it) }
+        //.collect { println(it) }
 
         //---------------------
         newTopic("Take")
