@@ -11,12 +11,33 @@ fun main() {
 //cancelFlow()
 //flowOperators()
 //terminalFlowOperator()
-    bufferFlow()
+//bufferFlow()
+    conflateFlow()
+}
+
+fun conflateFlow() {
+    //Conflate = Zona de almacenamiento temporal/Memoria intermedia
+    //Usar cuando los datos producidos (flow) son mas rapidos que los datos consumidos (collect)
+    //No mantiene todos los elementos del flow, los solapa
+    runBlocking {
+        newTopic("Conflate flow")
+        val time= measureTimeMillis {
+            getDataByFlowWithDelayStatic()
+                .map { setFormatToCelsius(it) }
+                .conflate() //Sin conflate=4635ms ; Con conflate=2831ms //Diferencia= 1804ms
+                .collect {
+                    delay(600)
+                    println("collect print: $it")
+                }
+        }
+        println("Time: $time")
+    }
 }
 
 fun bufferFlow() {
     //Buffer = Zona de almacenamiento temporal/Memoria intermedia
     //Usar cuando los datos producidos (flow) son mas rapidos que los datos consumidos (collect)
+    //Mantiene todos los elementos del flow
     runBlocking {
         newTopic("Buffer flow")
         val time= measureTimeMillis {
