@@ -1,9 +1,7 @@
 package com.example.kotlin01
 
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
@@ -17,8 +15,49 @@ fun main() {
 //multiFlow()
 //flatFlow()
 //flowExceptionsV1()
-    flowExceptionsV2()
+//flowExceptionsV2()
+//completions()
+cancelations()
+}
 
+fun cancelations() {
+    runBlocking {
+        newTopic("Cancelacion del flujo")
+
+        newTopic("Cancelar el job")
+
+        newTopic("Cancelar con una condicion al flow")
+
+        newTopic("Cancelar haciendo el flow Cancellable()")
+
+        getDataIntByFlow()
+            .cancellable()
+            .catch { e ->
+                println("Ocurrio una excepcion porque el flujo fue cancelado")
+            }
+            .onCompletion { "Se generaron todos los numeros." }
+            .collect {
+                println(it)
+                if (it == 4) cancel()
+                //if (it==4) throw CancellationException("Se cancelo el flujo")
+            }
+
+    }
+}
+
+
+fun completions() {
+    runBlocking {
+        newTopic("Fin de un Flujo (Completion)")
+
+        getCitiesFlow()
+            .onCompletion { println("Se consultaron todas las ciudades.") }
+            .collect { println(it) }
+
+        getDataIntByFlow()
+            .onCompletion { "Se generaron todos los numeros." }
+            .collect { println(it) }
+    }
 }
 
 fun flowExceptionsV2() {
@@ -33,7 +72,7 @@ fun flowExceptionsV2() {
             }
             .collect {
                 println(it)
-                if (it==-1) println("Notifica al programador...")
+                if (it == -1) println("Notifica al programador...")
             }
     }
 }
@@ -47,9 +86,9 @@ fun flowExceptionsV1() {
             getDataIntByFlow()
                 .collect {
                     println(it)
-                    if (it==3) throw Exception("Se alcanzo al numero de intentos igual a 3")
+                    if (it == 3) throw Exception("Se alcanzo al numero de intentos igual a 3")
                 }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             println("Ocurrio una excepcion...")
             //e.printStackTrace()
         }
@@ -64,7 +103,7 @@ fun flatFlow() {
         newTopic("FlatMapConcat")
 
         getCitiesFlow()
-            .flatMapConcat{ city->
+            .flatMapConcat { city ->
                 getLastThreeTemperaturesByCityFlow(city)
             }
             .map { setFormatToCelsius(it) }
@@ -74,19 +113,19 @@ fun flatFlow() {
         newTopic("FlatMapMerge")
 
         getCitiesFlow()
-            .flatMapMerge{ city->
+            .flatMapMerge { city ->
                 getLastThreeTemperaturesByCityFlow(city)
             }
             .map { setFormatToCelsius(it) }
-            //.collect { println(it) }
+        //.collect { println(it) }
     }
 }
 
-fun getCitiesFlow():Flow<String>{
+fun getCitiesFlow(): Flow<String> {
     println("Servicio web - Consultando ciudades ...")
-    return flow{
-        listOf("La Paz","Cochabamba","Santa Cruz")
-            .forEach { city->
+    return flow {
+        listOf("La Paz", "Cochabamba", "Santa Cruz")
+            .forEach { city ->
                 delay(2_000)
                 println("- Ciudad consultada: $city")
                 emit(city)
@@ -95,14 +134,13 @@ fun getCitiesFlow():Flow<String>{
 }
 
 
-
-fun getLastThreeTemperaturesByCityFlow(city:String):Flow<Float>{
+fun getLastThreeTemperaturesByCityFlow(city: String): Flow<Float> {
     println("Servicio web - Consultando 3 temperaturas para $city ...")
     return flow {
         (1..3).forEach {
             println("- Temperatura $it")
             delay(1_000)
-            emit(Random.nextInt(10,30).toFloat())
+            emit(Random.nextInt(10, 30).toFloat())
         }
     }
 }
@@ -127,10 +165,10 @@ fun multiFlow() {
             .map {
                 setFormatToCelsius(it)
             }
-            .combine(getDataIntByFlow()){ degrees, result->
+            .combine(getDataIntByFlow()) { degrees, result ->
                 "key: $result - value $degrees"
             }
-            //.collect { println(it) }
+        //.collect { println(it) }
     }
 }
 

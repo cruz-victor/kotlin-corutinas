@@ -71,7 +71,7 @@ fun getDataIntByFlow():Flow<Int>{
             println("-Number generated: $it")
             emit(it)
 
-            if (it==3) throw Exception("Se alcanzo al numero de intentos igual a 3")
+            //if (it==3) throw Exception("Se alcanzo al numero de intentos igual a 3")
         }
     }
 }
