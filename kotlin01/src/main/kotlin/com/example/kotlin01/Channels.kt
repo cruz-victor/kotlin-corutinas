@@ -13,29 +13,29 @@ fun main(){
 }
 
 fun manejoExcepcionesChannel() {
-    TODO("Not yet implemented")
+    newTopic("manejoExcepcionesChannel")
 }
 
 fun bufferChannel() {
-    TODO("Not yet implemented")
+    newTopic("bufferChannel")
 }
 
 fun pipelines() {
-    TODO("Not yet implemented")
+    newTopic("pipelines")
 }
 
 fun formasCerrarChannel() {
-    TODO("Not yet implemented")
+    newTopic("formasCerrarChannel")
 }
 
 fun formasRecivirElementosChannel() {
-    TODO("Not yet implemented")
+    newTopic("formasRecivirElementosChannel")
 }
 
 fun formasEnviarElementosChannel() {
-    TODO("Not yet implemented")
+    newTopic("formasEnviarElementosChannel")
 }
 
 fun channelsBasic() {
-    TODO("Not yet implemented")
+    newTopic("channelsBasic")
 }
