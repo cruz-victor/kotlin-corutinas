@@ -5,6 +5,11 @@ fun main(){
     channelsBasic()
     formasEnviarElementosChannel()
     formasRecivirElementosChannel()
+    formasCerrarChannel()
+}
+
+fun formasCerrarChannel() {
+    TODO("Not yet implemented")
 }
 
 fun formasRecivirElementosChannel() {
