@@ -8,7 +8,12 @@ fun main(){
     formasCerrarChannel()
     pipelines()
     bufferChannel()
+    manejoExcepcionesChannel()
 
+}
+
+fun manejoExcepcionesChannel() {
+    TODO("Not yet implemented")
 }
 
 fun bufferChannel() {
