@@ -6,6 +6,11 @@ fun main(){
     formasEnviarElementosChannel()
     formasRecivirElementosChannel()
     formasCerrarChannel()
+    pipelines()
+}
+
+fun pipelines() {
+    TODO("Not yet implemented")
 }
 
 fun formasCerrarChannel() {
