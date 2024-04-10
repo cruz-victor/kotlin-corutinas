@@ -1,20 +1,76 @@
 package com.example.kotlin01
 
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.ClosedReceiveChannelException
-import kotlinx.coroutines.channels.consumeEach
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.channels.*
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
-fun main(){
+fun main() {
 //basicChannel()
+//formasCerrarChannel()
+produceChannel()
+// produceAndConsumeChannel()
 //    formasEnviarElementosChannel()
 //    formasRecivirElementosChannel()
-//formasCerrarChannel()
+
 //    pipelines()
 //    bufferChannel()
 //    manejoExcepcionesChannel()
 
+}
+
+fun produceAndConsumeChannel() {
+    runBlocking {
+        val channel= Channel<Int>()
+
+        val producerJob=launch{
+            produceNumbers(channel, 10)
+        }
+
+        val consumerJos=launch {
+            consumeNumbers(channel)
+        }
+
+        producerJob.join()
+        consumerJos.join()
+    }
+}
+
+fun produceNumbers(channel:SendChannel<Int>, maxValue:Int){
+    runBlocking {
+        for (i in 1..maxValue){
+            println("Numero producido: $i")
+            channel.send(i)
+        }
+        channel.close()
+    }
+}
+
+fun consumeNumbers(channel: ReceiveChannel<Int>){
+    runBlocking {
+        for (number in channel){
+            println("Numero recibido: $number")
+            delay(100)
+        }
+        println("Consumidor finalizado")
+    }
+}
+
+fun produceChannel() {
+    runBlocking {
+        newTopic("Canales y el patron productor-consumidor")
+        val names = produceCities()
+        names.consumeEach { println(it) }
+    }
+}
+
+fun CoroutineScope.produceCities(): ReceiveChannel<String> {
+    return produce {
+        countries.forEach {
+            send(it)
+        }
+    }
 }
 
 fun manejoExcepcionesChannel() {
@@ -35,14 +91,14 @@ fun pipelines() {
 fun formasCerrarChannel() {
     runBlocking {
         newTopic("Cerrar un canal")
-        val channel=Channel<String>()
+        val channel = Channel<String>()
 
         launch {
             countries.forEach {
                 channel.send(it)
                 //if (it.equals("Cochabamba")) channel.close() //Lanza una exception porque el channel esta cerrado al intentar enviar
 
-                if (it.equals("Cochabamba")){
+                if (it.equals("Cochabamba")) {
                     channel.close()
                     return@launch
                 }
@@ -80,12 +136,12 @@ fun formasEnviarElementosChannel() {
     println("formasEnviarElementosChannel")
 }
 
-val countries = listOf("La Paz", "Cochabamba","Santa Cruz")
+val countries = listOf("La Paz", "Cochabamba", "Santa Cruz")
 
 fun basicChannel() {
     runBlocking {
         newTopic("channelsBasic")
-        val channel= Channel<String>()
+        val channel = Channel<String>()
 
         launch {
             countries.forEach {
@@ -97,7 +153,7 @@ fun basicChannel() {
 //            println(channel.receive())
 //        }
 
-        for(value in channel){
+        for (value in channel) {
             //println(channel.receive()) //No funciona porque los channel estan disenados para solucionar concurrencia entre coroutines
             println(value)
         }
