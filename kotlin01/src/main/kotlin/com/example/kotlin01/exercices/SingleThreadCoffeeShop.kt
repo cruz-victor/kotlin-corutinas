@@ -3,5 +3,5 @@ package com.example.kotlin01.exercices
 import com.example.kotlin01.newTopic
 
 fun main(){
-    newTopic("Single thread coffee shop")
+    //newTopic("Single thread coffee shop")
 }
