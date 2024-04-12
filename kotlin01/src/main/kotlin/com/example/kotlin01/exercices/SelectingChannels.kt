@@ -1,5 +1,7 @@
 package com.example.kotlin01.exercices
 
-fun main(){
+import com.example.kotlin01.newTopic
 
+fun main(){
+    newTopic("Selecting Channels")
 }
