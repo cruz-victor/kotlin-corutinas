@@ -2,22 +2,27 @@ package com.example.kotlin01
 
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.*
+import java.lang.ArithmeticException
+import java.util.concurrent.TimeoutException
 
 fun main() {
 //basicChannel()
 //formasCerrarChannel()
 //produceChannel()
-// produceAndConsumeChannel()
+//produceAndConsumeChannel()
 //pipelines()
 //pipelineWithStages()
-    bufferChannel()
+//bufferChannel()
+//excepcionesLaunchChannel()
+//excepcionesAsycChannelv1()
+    excepcionesAsycChannelv2()
+    readLine()
 //    formasEnviarElementosChannel()
 //    formasRecivirElementosChannel()
 
 
-//    manejoExcepcionesChannel()
-
 }
+
 
 fun pipelineWithStages() {
     runBlocking {
@@ -131,16 +136,116 @@ fun CoroutineScope.produceCities(): ReceiveChannel<String> {
     }
 }
 
-fun manejoExcepcionesChannel() {
-//    newTopic("manejoExcepcionesChannel")
-    println("manejoExcepcionesChannel")
+fun excepcionesAsycChannelv1() {
+    val exceptionHandler= CoroutineExceptionHandler{coroutineContext, throwable->
+        println("Notifica al programador...$throwable en $coroutineContext")
+    }
+
+    CoroutineScope(Job()+exceptionHandler).launch {
+        val result=async {
+            delay(500)
+            multiLambda(2,3){
+                if (it>5) throw ArithmeticException()
+            }
+        }
+        println("Result: ${result.await()}")
+    }
+
+    val channel=Channel<String>()
+
+    CoroutineScope(Job()).launch(exceptionHandler) {
+        delay(800)
+        countries.forEach {
+            channel.send(it)
+            if (it.equals("Cochabamba")) channel.close()
+        }
+    }
+
+    CoroutineScope(Job()).launch {
+        channel.consumeEach { println(it) }
+    }
+}
+
+fun excepcionesAsycChannelv2() {
+    val exceptionGlobalHandler= CoroutineExceptionHandler{ coroutineContext, throwable->
+        println("Notifica al programador...$throwable en $coroutineContext")
+    }
+
+    val coroutineScopeUno= CoroutineScope(Job()+CoroutineName("Coroutine Uno")+exceptionGlobalHandler)
+
+    coroutineScopeUno.launch {
+        val result=async {
+            println("result delay...")
+            delay(500)
+            multiLambda(2,3){
+                if (it>5) throw ArithmeticException()
+            }
+        }
+        println("Result: ${result.await()}")
+    }
+
+    val channel=Channel<String>()
+
+    println("antes del lauch countries...")
+    val coroutineScopeDos= CoroutineScope(Job()+CoroutineName("Coroutine Dos")+exceptionGlobalHandler)
+    coroutineScopeDos.launch {
+        delay(800)
+        countries.forEach {
+            println("countries send...")
+            channel.send(it)
+            if (it.equals("Cochabamba")) channel.close()
+        }
+    }
+
+    println("antes del lauch consume..")
+    val coroutineScopeTres= CoroutineScope(Job()+CoroutineName("Coroutine Tres")+exceptionGlobalHandler)
+    coroutineScopeTres.launch {
+        channel.consumeEach {
+            println("consumiend...$it")
+            println(it)
+        }
+    }
+}
+
+
+fun excepcionesLaunchChannel() {
+    //Manejador global de excepciones
+    val exceptionHandler= CoroutineExceptionHandler{coroutineContext, throwable->
+        println("Notifica al programador...$throwable en $coroutineContext")
+    }
+
+    runBlocking {
+        newTopic("Manejo de excepciones clasico")
+        launch {
+            try {
+                delay(2000)
+                throw Exception()
+            } catch (e: Exception) {
+                println("Ocurrio una excepcion...")
+            }
+        }
+
+        newTopic("Manejo de excepciones clasico v2")
+        val coroutineScope= CoroutineScope(Job()+ CoroutineName("mi coroutine clasica") + exceptionHandler)
+        coroutineScope.launch {
+                delay(5000)
+                throw Exception()
+        }
+
+        newTopic("Manejo de excepciones globales")
+        val scope= CoroutineScope(Job() + CoroutineName("miCoroutine") + exceptionHandler)
+        scope.launch() {
+            delay(3000)
+            throw TimeoutException()
+        }
+    }
 }
 
 fun bufferChannel() {
     runBlocking {
         newTopic("Channel sin Buffer")
-        val time=System.currentTimeMillis()
-        val channel=Channel<String>()
+        val time = System.currentTimeMillis()
+        val channel = Channel<String>()
         launch {
             countries.forEach {
                 delay(100)
@@ -152,12 +257,12 @@ fun bufferChannel() {
         launch {
             delay(1_000)
             channel.consumeEach { println(it) }
-            println("Time: ${System.currentTimeMillis()-time}ms")
+            println("Time: ${System.currentTimeMillis() - time}ms")
         }
 
         newTopic("Channel con Buffer")
-        val bufferTime=System.currentTimeMillis()
-        val bufferChannel=Channel<String>(3)
+        val bufferTime = System.currentTimeMillis()
+        val bufferChannel = Channel<String>(3)
         launch {
             countries.forEach {
                 delay(100)
@@ -169,7 +274,7 @@ fun bufferChannel() {
         launch {
             delay(1_000)
             bufferChannel.consumeEach { println(it) }
-            println("Buffer Time: ${System.currentTimeMillis()-bufferTime}ms")
+            println("Buffer Time: ${System.currentTimeMillis() - bufferTime}ms")
         }
 
 
