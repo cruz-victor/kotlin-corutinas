@@ -1,14 +1,10 @@
 package com.example.kotlin01.exercices
 
 import com.example.kotlin01.newTopic
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import kotlin.math.log
+import kotlinx.coroutines.*
+import kotlin.coroutines.coroutineContext
+import kotlin.system.measureTimeMillis
 
-fun main(){
-    newTopic("Single thread coffee shop")
 //    Pasos para preparar caffe capuchino
 //    1. Tomar la orden de cafe
 //    2. Moler los grandos de cafe (30 segundos)
@@ -16,59 +12,71 @@ fun main(){
 //    4. Evaporar la leche (10 segundos)
 //    5. Mezclar la leche y el caffe esprsso (5 segundos)
 //    6. Servir el caffe capuchino
-    runBlocking {
-        launch (CoroutineName("barista 1")) { makeCapuchinoCoffee() }
-        launch (CoroutineName("barista 2")) { makeCapuchinoCoffee() }
-        launch (CoroutineName("barista 3")) { makeCapuchinoCoffee() }
+
+fun main() {
+    //execution time: 130082 ms
+    newTopic("Single thread coffee shop")
+
+    val time = measureTimeMillis {
+        makeCapuchinoCoffee()
+        makeCapuchinoCoffee()
     }
+
+    println("Execution time: $time ms")
 }
 
-suspend
 fun makeCapuchinoCoffee() {
-    val coffeBeans= "Colombian coffee beans"
-    val milk="Fresh milk"
+    val coffeBeans = "Colombian coffee beans"
+    val milk = "Fresh milk"
 
-    println("Orden: Caffe cappuccino - $3.5")
+    println("${printCoroutineInfo2()} Orden: Caffe cappuccino - $3.5")
 
-    val groundBeans= grindCoffeBeans(coffeBeans)
-    val espressoShot=pullEspressoShot(groundBeans)
-    val steamedMilk=steamMilk(milk)
+    val groundBeans = grindCoffeBeans(coffeBeans)
+    val espressoShot = pullEspressoShot(groundBeans)
+    val steamedMilk = steamMilk(milk)
     val cappucino = makeCappuccino(espressoShot, steamedMilk)
-    
-    println("Servir: $cappucino")
 
+    println("${printCoroutineInfo2()} Servir: $cappucino")
 }
 
-suspend fun makeCappuccino(espressoShot: Any, steamedMilk: Any): Any {
-//    runBlocking {
-        println("Mezclando la leche con el cafe...")
-        delay(5000)
-//    }
+fun makeCappuccino(espressoShot: Any, steamedMilk: Any): Any {
+    println("${printCoroutineInfo2()} Mezclando la leche con el cafe...5s")
+    Thread.sleep(5000)
+
     return "Caffe cappuccino"
 }
 
-suspend fun  steamMilk(milk: String): String {
-//    runBlocking {
-        println("Evaporando la leche...")
-        delay(10000)
-//    }
+fun steamMilk(milk: String): String {
+    println("${printCoroutineInfo2()} Evaporando la leche...10s")
+    Thread.sleep(10000)
+
     return "Leche evaporada"
 }
 
-suspend fun pullEspressoShot(groundBeans: String): String {
-//    runBlocking {
-        println("Obteniendo un trago de caffe espresso...")
-        delay(20000)
-//    }
+fun pullEspressoShot(groundBeans: String): String {
+    println("${printCoroutineInfo2()} Obteniendo un trago de caffe espresso...20s")
+    Thread.sleep(20000)
+
     return "Caffe espresso"
 }
 
-suspend fun grindCoffeBeans(coffeBeans: String): String {
-//    runBlocking {
-        println("Moliendo los granos de cafe...")
-        delay(30000)
-//    }
+fun grindCoffeBeans(coffeBeans: String): String {
+    println("${printCoroutineInfo2()} Moliendo los granos de cafe...30s")
+    Thread.sleep(30000)
+
     return "Caffe molido"
 }
 
+suspend fun printCoroutineInfo(): Any {
+    val coroutineName = coroutineContext[CoroutineName]?.name ?: "UnknownCoroutine"
+    val jobInfo = coroutineContext.job.toString()
+    val threadName = Thread.currentThread().name
 
+    return ("[$threadName-$coroutineName-$jobInfo]")
+}
+
+fun printCoroutineInfo2(): Any {
+    val threadName = Thread.currentThread().name
+
+    return ("[$threadName]")
+}
