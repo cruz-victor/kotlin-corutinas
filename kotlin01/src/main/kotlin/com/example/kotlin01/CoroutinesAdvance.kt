@@ -9,12 +9,12 @@ fun main() {
 //produceChannel()
 // produceAndConsumeChannel()
 //pipelines()
-    pipelineWithStages()
+//pipelineWithStages()
+    bufferChannel()
 //    formasEnviarElementosChannel()
 //    formasRecivirElementosChannel()
 
 
-//    bufferChannel()
 //    manejoExcepcionesChannel()
 
 }
@@ -22,14 +22,15 @@ fun main() {
 fun pipelineWithStages() {
     runBlocking {
         println("1")
-        val numbersChannel=produceIntegerNumbers() //Etapa 1: Producir numeros enteros
+        val numbersChannel = produceIntegerNumbers() //Etapa 1: Producir numeros enteros
         println("2")
-        val squaredChannel=produceSquareIntegerNumbers(numbersChannel) //Etapa 2: Calcular el cuadrado de cada numero de la etapa anterior
+        val squaredChannel =
+            produceSquareIntegerNumbers(numbersChannel) //Etapa 2: Calcular el cuadrado de cada numero de la etapa anterior
         println("3")
-        val sumChannel= produceSumIntegerNumbers(squaredChannel) //Etapa 3: Acumula la suma de todos los numeros de la etapa anterior
+        val sumChannel =
+            produceSumIntegerNumbers(squaredChannel) //Etapa 3: Acumula la suma de todos los numeros de la etapa anterior
         println("4")
-        for (result in sumChannel)
-        {
+        for (result in sumChannel) {
             println("--Resultado final: $result")
         }
         println("5")
@@ -42,8 +43,8 @@ fun pipelineWithStages() {
 //Etapa 1: Genera numeros enteros del 1 al 5 y envialos a un canal
 //[1,2,3]
 fun CoroutineScope.produceIntegerNumbers(): ReceiveChannel<Int> {
-    return produce{
-        for(i in 1..3){
+    return produce {
+        for (i in 1..3) {
             delay(100)
             println("Etapa 1 - Numero entero producido: $i")
             send(i)
@@ -54,11 +55,11 @@ fun CoroutineScope.produceIntegerNumbers(): ReceiveChannel<Int> {
 //Etapa 2: Recibe numero del canla, calcula el cuadrado y envia los resultado a otro canal
 //[1,4,9]
 fun CoroutineScope.produceSquareIntegerNumbers(numbersChannel: ReceiveChannel<Int>): ReceiveChannel<Int> {
-    return produce{
-        for (number in numbersChannel){
+    return produce {
+        for (number in numbersChannel) {
             delay(500)
-            println("Etapa 2 - Numero al cuadro producido: "+(number*number))
-            send(number*number)
+            println("Etapa 2 - Numero al cuadro producido: " + (number * number))
+            send(number * number)
         }
     }
 }
@@ -66,11 +67,11 @@ fun CoroutineScope.produceSquareIntegerNumbers(numbersChannel: ReceiveChannel<In
 //Etapa 3: Recibe numeros del canal, acumula la suma y envia el resultado al final
 //[1,4,9]=15
 fun CoroutineScope.produceSumIntegerNumbers(squaredChannel: ReceiveChannel<Int>): ReceiveChannel<Int> {
-    return produce{
-        var sum=0
-        for (number in squaredChannel){
+    return produce {
+        var sum = 0
+        for (number in squaredChannel) {
             delay(800)
-            sum+=number
+            sum += number
             println("Etapa 3 - Numero sumado: $sum")
             send(sum)
         }
@@ -79,13 +80,13 @@ fun CoroutineScope.produceSumIntegerNumbers(squaredChannel: ReceiveChannel<Int>)
 
 fun produceAndConsumeChannel() {
     runBlocking {
-        val channel= Channel<Int>()
+        val channel = Channel<Int>()
 
-        val producerJob=launch{
+        val producerJob = launch {
             produceNumbers(channel, 10)
         }
 
-        val consumerJos=launch {
+        val consumerJos = launch {
             consumeNumbers(channel)
         }
 
@@ -94,9 +95,9 @@ fun produceAndConsumeChannel() {
     }
 }
 
-fun produceNumbers(channel:SendChannel<Int>, maxValue:Int){
+fun produceNumbers(channel: SendChannel<Int>, maxValue: Int) {
     runBlocking {
-        for (i in 1..maxValue){
+        for (i in 1..maxValue) {
             println("Numero producido: $i")
             channel.send(i)
         }
@@ -104,9 +105,9 @@ fun produceNumbers(channel:SendChannel<Int>, maxValue:Int){
     }
 }
 
-fun consumeNumbers(channel: ReceiveChannel<Int>){
+fun consumeNumbers(channel: ReceiveChannel<Int>) {
     runBlocking {
-        for (number in channel){
+        for (number in channel) {
             println("Numero recibido: $number")
             delay(100)
         }
@@ -136,16 +137,51 @@ fun manejoExcepcionesChannel() {
 }
 
 fun bufferChannel() {
-//    newTopic("bufferChannel")
-    println("bufferChannel")
+    runBlocking {
+        newTopic("Channel sin Buffer")
+        val time=System.currentTimeMillis()
+        val channel=Channel<String>()
+        launch {
+            countries.forEach {
+                delay(100)
+                channel.send(it)
+            }
+            channel.close()
+        }
+
+        launch {
+            delay(1_000)
+            channel.consumeEach { println(it) }
+            println("Time: ${System.currentTimeMillis()-time}ms")
+        }
+
+        newTopic("Channel con Buffer")
+        val bufferTime=System.currentTimeMillis()
+        val bufferChannel=Channel<String>(3)
+        launch {
+            countries.forEach {
+                delay(100)
+                bufferChannel.send(it)
+            }
+            bufferChannel.close()
+        }
+
+        launch {
+            delay(1_000)
+            bufferChannel.consumeEach { println(it) }
+            println("Buffer Time: ${System.currentTimeMillis()-bufferTime}ms")
+        }
+
+
+    }
 }
 
 fun pipelines() {
     runBlocking {
         newTopic("pipelines")
-        val citiesChannel=produceCities() //Etapa produccion de ciudades
-        val foodsChannel=produceFoods(citiesChannel) //Etapa produccion de comidas por ciudad
-        foodsChannel.consumeEach{println(it)}
+        val citiesChannel = produceCities() //Etapa produccion de ciudades
+        val foodsChannel = produceFoods(citiesChannel) //Etapa produccion de comidas por ciudad
+        foodsChannel.consumeEach { println(it) }
         citiesChannel.cancel()
         foodsChannel.cancel() //cierra el channel
         println("Todo esta 10/10")
@@ -153,9 +189,9 @@ fun pipelines() {
 }
 
 fun CoroutineScope.produceFoods(cities: ReceiveChannel<String>): ReceiveChannel<String> {
-    return produce{
-        for (city in cities){
-            val food=getFoodByCity(city)
+    return produce {
+        for (city in cities) {
+            val food = getFoodByCity(city)
             send("$food desde $city")
         }
     }
@@ -164,11 +200,11 @@ fun CoroutineScope.produceFoods(cities: ReceiveChannel<String>): ReceiveChannel<
 
 suspend fun getFoodByCity(city: String): String {
     delay(300)
-    return when(city){
-        "La Paz"->"Plato paceño"
-        "Cochabamba"->"Chicharron"
-        "Santa Cruz"->"Majadito"
-        else->"Sin datos"
+    return when (city) {
+        "La Paz" -> "Plato paceño"
+        "Cochabamba" -> "Chicharron"
+        "Santa Cruz" -> "Majadito"
+        else -> "Sin datos"
     }
 
 }
